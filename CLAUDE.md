@@ -1,6 +1,6 @@
 # CLAUDE.md — noteAI
 
-Chat de IA mínimo para Linux (Debian/Ubuntu). `Ctrl+O` muestra/oculta un panel lateral siempre encima; se pregunta algo rápido (p. ej. una palabra mientras se lee) y se vuelve a ocultar. Hermano de QuickNotes (`../notesLx`): mismo diseño y misma gestión de ventana. El usuario trae su propia API key de un proveedor barato.
+Chat de IA mínimo para Linux (Debian/Ubuntu). `Super+I` muestra/oculta un panel lateral siempre encima; se pregunta algo rápido (p. ej. una palabra mientras se lee) y se vuelve a ocultar. Hermano de QuickNotes (`../notesLx`): mismo diseño y misma gestión de ventana. El usuario trae su propia API key de un proveedor barato.
 
 Todo el proyecto (código, comentarios, textos de la interfaz, commits, README) está en **español**. Mantenerlo así.
 
@@ -72,7 +72,7 @@ Flujo de una pregunta: `Composer` ↵ → `App.ask` → `ChatView.beginAnswer` �
 - **`run()` captura `const messages = this.messages`** para que, si se empieza un chat nuevo mientras llega una respuesta, esta no se cuele en el nuevo.
 - **`useHotkeys` separa combinaciones por comas**, así que `Ctrl+,` (configuración) se gestiona aparte en el listener de captura de `App.bindKeys`. Lo mismo valdría para cualquier atajo con coma.
 - **Arrastre de ventana**: `useWindowDrag` no arrastra sobre `.msg-body`, `.settings`, `textarea`, `.modal` (ahí se selecciona texto).
-- **Atajo global**: `ctrl+o` o `NOTEAI_SHORTCUT`. En Wayland no se puede registrar; `packaging/setup-shortcut.sh` crea el atajo de GNOME que ejecuta `noteai --toggle`. Ojo: captura Ctrl+O en todo el escritorio.
+- **Atajo global**: `super+i` (`DEFAULT_SHORTCUT` en window.rs) o `NOTEAI_SHORTCUT`. Antes fue `ctrl+o` (capturaba «Abrir archivo» en todo el escritorio) y `super+o` (en GNOME es «bloquear rotación», `rotate-video-lock-static`). Antes de cambiarlo, comprobar conflictos con `gsettings list-recursively` en wm/shell/mutter/media-keys y los custom-keybindings. En GNOME/X11 la app registra `super+i` sin error pero **no le llega** (mutter se queda el teclado al pulsar Super por el overlay-key), y en Wayland no se puede registrar: en ambos casos hace falta `packaging/setup-shortcut.sh`, que crea el atajo de GNOME (`<Super>i`) → `noteai --toggle`. El README lo pone como paso obligatorio de la instalación. `make install` usa `apt install --reinstall` porque la versión del paquete no cambia entre compilaciones (sin eso apt no reinstala). Con la ventana enfocada, el atajo global sigue funcionando (lo captura el sistema, no WebKit).
 - **Puerto de Vite 1421** (QuickNotes usa 1420) para poder desarrollar ambas a la vez.
 - `NOTEAI_DIR` cambia la carpeta de datos (por defecto `~/.noteai`).
 - Iconos: se generan desde `packaging/icon.svg` con `npx tauri icon packaging/icon.svg -o src-tauri/icons` (borrar después android/, ios/, Square*, .ico, .icns).

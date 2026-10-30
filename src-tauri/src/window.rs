@@ -23,7 +23,7 @@ pub const EVENT_QUIT: &str = "nai://quit";
 /// Carga: `true` si la ventana está acoplada a la derecha, `false` si flota.
 pub const EVENT_PLACEMENT: &str = "nai://placement";
 
-const DEFAULT_SHORTCUT: &str = "ctrl+o";
+const DEFAULT_SHORTCUT: &str = "super+i";
 /// Ancho inicial del panel acoplado (píxeles lógicos).
 const PANEL_WIDTH: f64 = 440.0;
 const PANEL_MIN_WIDTH: f64 = 340.0;
@@ -100,7 +100,7 @@ pub fn shortcut_plugin<R: Runtime>() -> TauriPlugin<R> {
         .build()
 }
 
-/// Registra Ctrl+O (o `NOTEAI_SHORTCUT`). Si falla (otro programa lo
+/// Registra Super+I (o `NOTEAI_SHORTCUT`). Si falla (otro programa lo
 /// usa, o Wayland), la app sigue funcionando y el frontend sugiere el atajo
 /// del escritorio que ejecuta `noteai --toggle`.
 pub fn register_summon_shortcut<R: Runtime>(app: &AppHandle<R>) {

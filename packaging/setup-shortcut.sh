@@ -1,15 +1,15 @@
 #!/bin/sh
-# Registra Ctrl+O -> "noteai --toggle" como atajo del escritorio.
+# Registra Super+I -> "noteai --toggle" como atajo del escritorio.
 #
 # Es la forma más fiable en GNOME y la única en Wayland, donde una aplicación
 # no puede capturar atajos globales por sí misma.
 #
-#   sh setup-shortcut.sh              instala Ctrl+O
+#   sh setup-shortcut.sh              instala Super+I
 #   sh setup-shortcut.sh '<Super>a'   otra combinación
 #   sh setup-shortcut.sh --remove     quita el atajo
 set -eu
 
-BINDING="${1:-<Control>o}"
+BINDING="${1:-<Super>i}"
 COMMAND="${NOTEAI_BIN:-noteai} --toggle"
 MEDIA=org.gnome.settings-daemon.plugins.media-keys
 KPATH=/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/noteai/
@@ -24,12 +24,12 @@ if ! has_gnome; then
 No se detectó GNOME. Crea el atajo a mano en tu escritorio:
 
   Comando:  $COMMAND
-  Atajo:    Ctrl+O
+  Atajo:    Super+I
 
   KDE Plasma:  Preferencias del sistema > Atajos > Añadir comando
   XFCE:        Configuración > Teclado > Atajos de aplicaciones
-  i3 / sway:   bindsym Control+o exec $COMMAND
-  Hyprland:    bind = CTRL, O, exec, $COMMAND
+  i3 / sway:   bindsym Mod4+i exec $COMMAND
+  Hyprland:    bind = SUPER, I, exec, $COMMAND
 MSG
   exit 0
 fi

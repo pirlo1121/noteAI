@@ -93,7 +93,7 @@ export class ChatView {
       'div',
       { class: 'chat-empty' },
       h('div', { class: 'chat-empty-title' }, '¿Qué quieres saber?'),
-      h('div', { class: 'chat-empty-hint' }, 'Una palabra rara, una fecha, un concepto… Pregunta y vuelve a lo tuyo con ', kbd('Ctrl O'), '.'),
+      h('div', { class: 'chat-empty-hint' }, 'Una palabra rara, una fecha, un concepto… Pregunta y vuelve a lo tuyo con ', kbd('Super I'), '.'),
     );
   }
 

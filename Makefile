@@ -9,7 +9,7 @@ help:
 	@echo "make test      Tests de Rust"
 	@echo "make deb       Genera el paquete .deb"
 	@echo "make install   Instala el .deb generado (sudo)"
-	@echo "make shortcut  Configura Ctrl+O en el escritorio (GNOME)"
+	@echo "make shortcut  Configura Super+I en el escritorio (GNOME)"
 
 deps:
 	sudo apt-get update
@@ -33,7 +33,7 @@ build deb:
 	@ls -1 src-tauri/target/release/bundle/deb/*.deb
 
 install:
-	sudo apt install -y ./src-tauri/target/release/bundle/deb/noteAI_*_amd64.deb
+	sudo apt install -y --reinstall ./src-tauri/target/release/bundle/deb/noteAI_*_amd64.deb
 
 uninstall:
 	sudo apt remove -y $$(dpkg-deb -f src-tauri/target/release/bundle/deb/*.deb Package)

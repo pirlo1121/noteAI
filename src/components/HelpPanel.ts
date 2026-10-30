@@ -3,7 +3,7 @@ import { h, kbd } from '../utils/dom';
 import { Modal } from './Modal';
 
 const SHORTCUTS: [string, string][] = [
-  ['Ctrl O', 'Mostrar / ocultar noteAI (global)'],
+  ['Super I', 'Mostrar / ocultar noteAI (global)'],
   ['↵', 'Enviar la pregunta'],
   ['⇧ ↵', 'Salto de línea'],
   ['↑', 'Con la caja vacía: recuperar la última pregunta'],

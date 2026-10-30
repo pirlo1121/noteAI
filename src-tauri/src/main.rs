@@ -1,7 +1,7 @@
 // noteAI — chat de IA residente con una sola ventana.
 //
 // El proceso vive en segundo plano: cerrar la ventana solo la oculta, así
-// Ctrl+O la muestra al instante sin volver a arrancar WebKit.
+// Super+I la muestra al instante sin volver a arrancar WebKit.
 
 mod commands;
 mod config;

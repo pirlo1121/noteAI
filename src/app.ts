@@ -167,7 +167,7 @@ export class App {
     }
     if ((!shortcutOk || wayland) && !load<boolean>('noteai.shortcutHintShown')) {
       store('noteai.shortcutHintShown', true);
-      this.toast.show('Ctrl+O no está disponible para la app. Ejecuta: sh /usr/share/noteai/setup-shortcut.sh', undefined, 10000);
+      this.toast.show('Super+I no está disponible para la app. Ejecuta: sh /usr/share/noteai/setup-shortcut.sh', undefined, 10000);
     }
   }
 
@@ -382,7 +382,7 @@ export class App {
         if (this.busy) this.stop();
         else void this.backend.hideWindow();
       },
-      'ctrl+o,ctrl+w': () => void this.backend.hideWindow(),
+      'ctrl+w': () => void this.backend.hideWindow(),
       'ctrl+n,ctrl+l': () => this.newChat(),
       'ctrl+shift+c': () => {
         const last = [...this.messages].reverse().find((m) => m.role === 'assistant');

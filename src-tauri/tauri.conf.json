@@ -36,7 +36,7 @@
     "targets": ["deb"],
     "category": "Utility",
     "shortDescription": "Chat de IA rápido, siempre a mano",
-    "longDescription": "Pulsa Ctrl+O desde cualquier programa, pregunta y vuelve a lo tuyo. Usa tu propia API key (Anthropic, Groq, DeepSeek, Gemini, OpenRouter, OpenAI u Ollama).",
+    "longDescription": "Pulsa Super+I desde cualquier programa, pregunta y vuelve a lo tuyo. Usa tu propia API key (Anthropic, Groq, DeepSeek, Gemini, OpenRouter, OpenAI u Ollama).",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
