@@ -9,6 +9,16 @@ Un chat de IA mínimo para Debian/Linux, hermano de [QuickNotes](https://github.
 - Respuestas en streaming, en Markdown y breves por defecto.
 - La clave se guarda solo en tu equipo (`~/.noteai/config.json`, permisos 600) y nunca llega a la interfaz web: las llamadas a la API las hace Rust.
 
+**Instalación rápida** (Debian/Ubuntu, con Rust y Node.js ya instalados):
+
+```sh
+git clone https://github.com/pirlo1121/noteAI.git && cd noteAI
+make deps && make deb && make install
+noteai
+```
+
+La guía completa, paso a paso y para un equipo nuevo, está en [Instalar](#instalar).
+
 ---
 
 ## Primer uso
@@ -70,26 +80,169 @@ Variables de entorno opcionales:
 
 ## Instalar
 
-Requisitos y pasos idénticos a QuickNotes (Debian 12/13 o Ubuntu 22.04+, X11 o Wayland):
+Hay dos caminos:
+
+- **A. Instalar un `.deb` ya compilado**: rápido, no necesita herramientas de desarrollo.
+- **B. Compilar desde el código fuente**: necesario si no tienes un `.deb` o quieres modificar la app.
+
+En los dos casos, al final necesitas una **API key** de algún proveedor (o Ollama instalado, que no la necesita). Ver [Primer uso](#primer-uso).
+
+### Requisitos
+
+| | Mínimo |
+|---|---|
+| Sistema | Debian 12 (bookworm) o 13 (trixie), 64 bits (`amd64`). También Ubuntu 22.04+ y derivadas |
+| Escritorio | Cualquiera con X11 o Wayland (GNOME, KDE, XFCE, i3, sway, Hyprland…) |
+| Para ejecutar | `libwebkit2gtk-4.1-0`, `libgtk-3-0` (apt las instala solas con el `.deb`) y conexión a internet (salvo con Ollama) |
+| Para compilar | `git`, Rust ≥ 1.77 (vía rustup), Node.js ≥ 18 con npm, y las librerías `-dev` del paso B.2 |
+| Espacio para compilar | ~3 GB libres (la carpeta `src-tauri/target` crece bastante) |
+
+### A. Instalar un `.deb` ya compilado
+
+1. En el equipo donde compilaste (camino B), el paquete está en
+   `src-tauri/target/release/bundle/deb/noteAI_0.1.0_amd64.deb`. Cópialo al otro equipo (USB, `scp`…).
+2. En el equipo nuevo:
+
+   ```sh
+   sudo apt update
+   sudo apt install ./noteAI_0.1.0_amd64.deb
+   ```
+
+3. Ábrela desde el menú de aplicaciones (**noteAI**) o con `noteai` en una terminal.
+4. Sigue con el [paso 5 (primer arranque)](#5-primer-arranque-api-key) y el [paso 6 (atajo Ctrl+O)](#6-atajo-ctrlo).
+
+### B. Compilar desde el código fuente
+
+#### 1. Clonar el repositorio
 
 ```sh
-make deps        # dependencias del sistema (sudo), Rust y npm
-make deb         # genera src-tauri/target/release/bundle/deb/noteAI_0.1.0_amd64.deb
-make install     # lo instala con apt (sudo)
+sudo apt update
+sudo apt install -y git
+git clone https://github.com/pirlo1121/noteAI.git
+cd noteAI
 ```
 
-Ábrela desde el menú (**noteAI**) o con `noteai`. La primera vez se activa el inicio automático (arranca oculta con la sesión), así que `Ctrl+O` funciona siempre.
+#### 2. Instalar las dependencias del sistema
 
-### Atajo Ctrl+O
+```sh
+sudo apt install -y build-essential curl wget file pkg-config libssl-dev \
+  libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev libxdo-dev
+```
 
-En X11 la app registra `Ctrl+O` sola. En **Wayland** (o si otro programa ya lo usa) aparece un aviso; registra el atajo en el escritorio:
+#### 3. Instalar Rust y Node.js
+
+```sh
+# Rust (no uses el rustc de apt: puede ser demasiado antiguo)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source ~/.cargo/env
+rustc --version          # debe ser ≥ 1.77
+
+# Node.js ≥ 18 (el de Debian 12 y 13 sirve)
+sudo apt install -y nodejs npm
+node --version
+```
+
+> Atajo: los pasos 2 y 3 (y el `npm install` del paso 4) se hacen de una vez con `make deps`,
+> aunque Node.js debe estar instalado antes.
+
+#### 4. Compilar e instalar
+
+```sh
+npm install
+make deb                 # = npm run tauri build -- --bundles deb
+make install             # = sudo apt install ./src-tauri/target/release/bundle/deb/noteAI_*_amd64.deb
+```
+
+La primera compilación tarda varios minutos. El paquete instala:
+
+- `/usr/bin/noteai`
+- la entrada de menú **noteAI** y sus iconos
+- `/usr/share/noteai/setup-shortcut.sh`
+
+> ¿Solo quieres probarla sin instalar? `make dev` la compila y la abre en modo desarrollo.
+
+#### 5. Primer arranque: API key
+
+Abre la app (menú de aplicaciones o `noteai`). Aparece **Conecta un modelo**: elige el proveedor, pega la API key y pulsa **Guardar** (detalles en [Primer uso](#primer-uso)). Dónde conseguir la clave:
+
+| Proveedor | Clave en | Nota |
+|---|---|---|
+| Anthropic (por defecto) | console.anthropic.com/settings/keys | Claude Haiku 5.5, muy barato; requiere saldo |
+| Groq | console.groq.com/keys | Muy rápido, plan gratuito con límites |
+| Google Gemini | aistudio.google.com/apikey | Plan gratuito con límites |
+| DeepSeek | platform.deepseek.com/api_keys | Muy económico |
+| OpenRouter | openrouter.ai/keys | Una clave para muchos modelos |
+| OpenAI | platform.openai.com/api-keys | Elige un modelo «mini» o «nano» |
+| Ollama | — | Local y gratis: instala [Ollama](https://ollama.com) y `ollama pull llama3.2` |
+
+La clave queda en `~/.noteai/config.json` con permisos 600 (solo tu usuario puede leerla).
+
+En el primer arranque la app también se configura para **iniciarse oculta con la sesión**, así `Ctrl+O` funciona siempre sin abrirla a mano.
+
+#### 6. Atajo Ctrl+O
+
+En X11 la app registra `Ctrl+O` sola. Hace falta un atajo del escritorio en dos casos (la app avisa una vez):
+
+- **Wayland**: las aplicaciones no pueden capturar atajos globales.
+- **Otro programa ya usa Ctrl+O** como atajo global.
+
+Ejecuta una vez:
 
 ```sh
 sh /usr/share/noteai/setup-shortcut.sh            # GNOME: Ctrl+O → noteai --toggle
 sh /usr/share/noteai/setup-shortcut.sh '<Super>a' # otra combinación
+sh /usr/share/noteai/setup-shortcut.sh --remove   # quitar el atajo
 ```
 
-En KDE, XFCE, i3, sway o Hyprland el script indica qué comando poner (`noteai --toggle`).
+En KDE, XFCE, i3, sway o Hyprland el script indica qué añadir (el comando es `noteai --toggle`).
+
+Opciones de línea de comandos:
+
+- `--toggle`: mostrar u ocultar.
+- `--hidden`: arrancar en segundo plano.
+- `--quit`: salir.
+
+### Llevarte tu configuración a otro equipo (opcional)
+
+Todo está en `~/.noteai/`: `config.json` (proveedor, modelo, precios y **tu API key**), `usage.jsonl` (historial de consumo) y `.window.json` (tamaño y posición). Cópiala con la app cerrada (`noteai --quit`) y conservando los permisos:
+
+```sh
+rsync -a ~/.noteai/ usuario@equipo-nuevo:~/.noteai/
+```
+
+No la subas a ningún repositorio ni la compartas: contiene tu clave.
+
+### Actualizar a una versión nueva
+
+```sh
+cd noteAI
+git pull
+npm install
+noteai --quit
+make deb && make install
+noteai &
+```
+
+La configuración y el consumo de `~/.noteai` no se tocan.
+
+### Desinstalar
+
+```sh
+sudo apt remove note-ai          # si no lo encuentra: dpkg -S /usr/bin/noteai muestra el nombre del paquete
+sh /usr/share/noteai/setup-shortcut.sh --remove   # antes de desinstalar, si creaste el atajo de GNOME
+```
+
+La configuración sigue en `~/.noteai/` (incluida la API key). Bórrala si ya no la quieres: `rm -r ~/.noteai`. Si la app se iniciaba con la sesión, borra también `~/.config/autostart/noteAI.desktop` si quedó.
+
+### Problemas conocidos
+
+- **Ventana en blanco** con algunos drivers NVIDIA: `WEBKIT_DISABLE_DMABUF_RENDERER=1 noteai`.
+- **Ctrl+O no responde**: ejecuta `setup-shortcut.sh` (ver paso 6).
+- **La ventana se abre fuera de sitio o con un tamaño raro**: cierra la app y borra `~/.noteai/.window.json`.
+- **«API key no válida» (401/403)**: revisa la clave en `Ctrl ,`.
+- **«Modelo o URL no encontrados» (404)**: pulsa **Cargar modelos** y elige uno de la lista.
+- **«Límite de uso alcanzado o sin saldo» (429)**: espera un poco o añade saldo en la consola del proveedor.
+- **«Sin conexión»**: revisa internet o, con Ollama, que esté en marcha (`ollama serve`).
 
 ### Desarrollo
 
