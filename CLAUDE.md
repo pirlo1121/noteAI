@@ -43,6 +43,7 @@ src-tauri/src/
 src/
 ├── main.ts           Fuentes (fontsource) + CSS + arranque.
 ├── app.ts            Orquestador: estado del chat, ask/run/retry/stop, newChat, settings, teclado, zoom.
+├── commands.ts       /clear, /def, /tr[:idioma]: parseCommand() → clear | ask {content, display} | error. Lista para F1.
 ├── providers.ts      Presets: id, api, baseUrl, modelo barato sugerido, keyUrl, nota, needsKey.
 ├── types.ts          Tipos espejo de Rust (camelCase por serde rename_all).
 ├── components/       Header, ChatView, Composer, SettingsView, UsagePanel, StatusBar, HelpPanel, Modal, Toast, ResizeHandles
@@ -66,6 +67,7 @@ Flujo de una pregunta: `Composer` ↵ → `App.ask` → `ChatView.beginAnswer` �
 - **Coste**: `Config.price_input/price_output` en US$ por millón de tokens (opcionales; `None` = sin coste). Se calcula al guardar cada `Record`, no al mostrarlo, para que cambiar precios no reescriba el historial. Precios conocidos en `providers.ts` (`price`): solo Haiku 5.5 (0,10/0,50, válido para prompts ≤100K tokens) y Ollama (0). No inventar precios de otros proveedores: dejar que el usuario los rellene.
 - `usage.jsonl` es append-only; `read_all` ignora líneas dañadas. «Borrar registro» pide dos clics (no usar `confirm()`).
 - Los modelos sugeridos para Groq/DeepSeek/Gemini/OpenRouter/OpenAI en `providers.ts` pueden quedar viejos; el botón «Cargar modelos» es la vía para elegir uno vigente.
+- **Comandos**: solo frontend. `ChatMessage.display` guarda lo que escribió el usuario (se muestra y se recupera con ↑); `content` es lo que va al modelo. Rust ignora `display` (serde descarta campos desconocidos). El idioma va pegado al comando (`/tr:en`) para no confundirse con el texto («/tr de nada»). Solo `/palabra` o `/palabra:opción` cuenta como comando. Para añadir uno: un `case` en `parseCommand` y una línea en `COMMAND_HELP`.
 - **Persistencia del chat**: `localStorage` (`noteai.chat` = `{messages, at}`, `noteai.fontSize`, `noteai.autostartInitialized`, `noteai.shortcutHintShown`). Tras `IDLE_NEW_CHAT_MS` (15 min) sin uso, al invocar la ventana empieza un chat nuevo (toast con «Recuperar el anterior»).
 - **`run()` captura `const messages = this.messages`** para que, si se empieza un chat nuevo mientras llega una respuesta, esta no se cuele en el nuevo.
 - **`useHotkeys` separa combinaciones por comas**, así que `Ctrl+,` (configuración) se gestiona aparte en el listener de captura de `App.bindKeys`. Lo mismo valdría para cualquier atajo con coma.

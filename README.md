@@ -42,6 +42,17 @@ Para cambiarlo después: `Ctrl ,` o el engranaje de la cabecera. En **Avanzado**
 
 **Chats cortos a propósito:** si pasan más de 15 minutos sin usarla, al abrirla empieza un chat nuevo. Así cada consulta suelta no arrastra la conversación anterior, y cada pregunta es más rápida y más barata. El aviso que aparece permite recuperar el chat anterior.
 
+**Comandos** (escríbelos en la caja de la pregunta; F1 los lista):
+
+| Comando | Qué hace |
+|---|---|
+| `/clear` (`/limpiar`) | Limpia la conversación (con «Recuperar el anterior») |
+| `/def palabra` | Definición breve, origen y un ejemplo |
+| `/tr texto` | Traduce: del español al inglés, o de otro idioma al español |
+| `/tr:en texto` | Traduce a un idioma concreto (`es en fr de it pt ca nl ru ja zh ko ar`) |
+
+En el chat se ve lo que escribiste (`/def inefable`); al modelo le llega una petición más precisa. `↑` recupera el comando tal cual.
+
 **Consumo:** cada respuesta guarda sus tokens de entrada y salida en `~/.noteai/usage.jsonl`. La barra de estado muestra los de la última respuesta (`320 → 85 tokens · 0,000075 US$`); al pulsarla, o con `Ctrl U`, se abre el panel con el gasto de hoy, los últimos 7 días, el mes y el total, el desglose por modelo y las últimas respuestas.
 
 - Los tokens los informa el proveedor. Si no lo hace (o se detiene la respuesta antes del recuento), se estiman a ~4 caracteres por token y se marcan con `≈`.

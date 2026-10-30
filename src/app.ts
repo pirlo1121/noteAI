@@ -8,6 +8,7 @@
 //
 // Sin configuración, SettingsView ocupa el panel en lugar del chat.
 
+import { parseCommand } from './commands';
 import { ChatView } from './components/ChatView';
 import { Composer } from './components/Composer';
 import { Header } from './components/Header';
@@ -94,7 +95,10 @@ export class App {
     });
     this.composer = new Composer({
       onSubmit: (text) => void this.ask(text),
-      onRecall: () => [...this.messages].reverse().find((m) => m.role === 'user')?.content ?? null,
+      onRecall: () => {
+        const last = [...this.messages].reverse().find((m) => m.role === 'user');
+        return last ? last.display ?? last.content : null;
+      },
     });
     this.statusBar = new StatusBar(
       () => this.help.open(),
@@ -181,11 +185,19 @@ export class App {
   // ── Chat ────────────────────────────────────────────────────────────────
 
   private async ask(text: string): Promise<void> {
+    const command = parseCommand(text);
+    if (command?.kind === 'error') return this.toast.show(command.message);
+    if (command?.kind === 'clear') {
+      this.composer.value = '';
+      return this.newChat();
+    }
     if (this.busy) return;
     if (!this.config) return this.openSettings();
     this.composer.value = '';
-    this.messages.push({ role: 'user', content: text });
-    this.chat.beginAnswer(text);
+    const message: ChatMessage =
+      command?.kind === 'ask' ? { role: 'user', content: command.content, display: command.display } : { role: 'user', content: text };
+    this.messages.push(message);
+    this.chat.beginAnswer(message.display ?? message.content);
     await this.run();
   }
 
@@ -222,7 +234,8 @@ export class App {
   private retry(): void {
     if (this.busy || this.messages[this.messages.length - 1]?.role !== 'user') return;
     this.chat.render(this.messages.slice(0, -1));
-    this.chat.beginAnswer(this.messages[this.messages.length - 1].content);
+    const last = this.messages[this.messages.length - 1];
+    this.chat.beginAnswer(last.display ?? last.content);
     void this.run();
   }
 

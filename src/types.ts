@@ -4,7 +4,10 @@ export type Api = 'anthropic' | 'openai';
 
 export interface ChatMessage {
   role: 'user' | 'assistant';
+  /** Lo que recibe el modelo. */
   content: string;
+  /** Lo que escribió el usuario, si un comando lo transformó (p. ej. «/def inefable»). Rust lo ignora. */
+  display?: string;
 }
 
 /** Configuración tal como la ve el frontend: sin la API key. */

@@ -1,3 +1,4 @@
+import { COMMAND_HELP } from '../commands';
 import { h, kbd } from '../utils/dom';
 import { Modal } from './Modal';
 
@@ -26,6 +27,8 @@ export class HelpPanel extends Modal {
     this.panel.append(
       h('div', { class: 'modal-title' }, 'Atajos de teclado'),
       h('div', { class: 'help-grid' }, ...SHORTCUTS.flatMap(([k, v]) => [h('span', {}, kbd(k)), h('span', {}, v)])),
+      h('div', { class: 'modal-title' }, 'Comandos'),
+      h('div', { class: 'help-grid' }, ...COMMAND_HELP.flatMap(([k, v]) => [h('span', {}, h('code', {}, k)), h('span', {}, v)])),
       h(
         'div',
         { class: 'modal-footer' },

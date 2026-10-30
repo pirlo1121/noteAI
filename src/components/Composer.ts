@@ -18,7 +18,7 @@ export class Composer {
     this.input = h('textarea', {
       class: 'composer-input',
       rows: 1,
-      placeholder: 'Pregunta algo…',
+      placeholder: 'Pregunta algo…   /def  /tr  /clear',
       spellcheck: 'true',
       'aria-label': 'Pregunta',
     });

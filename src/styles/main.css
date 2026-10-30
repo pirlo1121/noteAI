@@ -574,3 +574,4 @@ select.field-input option { background: #1a1a1d; }
 .usage-footer > span { flex: 1; line-height: 1.6; }
 .usage-clear { color: var(--faint); white-space: nowrap; }
 .usage-clear:hover { color: var(--err); }
+.help-grid code { font: 12px var(--font-mono); color: var(--text); }

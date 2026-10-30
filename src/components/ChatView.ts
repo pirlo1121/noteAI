@@ -27,7 +27,7 @@ export class ChatView {
       this.el.replaceChildren(this.empty());
       return;
     }
-    this.el.replaceChildren(...messages.map((m) => (m.role === 'user' ? this.question(m.content) : this.answer(m.content))));
+    this.el.replaceChildren(...messages.map((m) => (m.role === 'user' ? this.question(m.display ?? m.content) : this.answer(m.content))));
     this.scrollToEnd(true);
   }
 
